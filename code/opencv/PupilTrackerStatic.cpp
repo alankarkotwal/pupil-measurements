@@ -17,16 +17,15 @@ RNG rng(12345);
 
 int main() {
 
-	VideoCapture cap(1);
+	//VideoCapture cap(1);
 	Mat frame;
-	//frame = imread("../../images/eye.jpg");
+	frame = imread("../../images/eye.jpg");
 	//char key;
 	namedWindow("Eye Frame", WINDOW_AUTOSIZE);
-	namedWindow("Output", WINDOW_AUTOSIZE);
 	
-	while(1) {
+	//while(1) {
 		
-		cap >> frame;
+		//cap >> frame;
 		imshow("Eye Frame", frame);
 		//key = waitKey(1);
 		//if(key == 'c') {
@@ -42,9 +41,8 @@ int main() {
 		
 		equalizeHist(y, y);
 		threshold(y, y, threshVal, 255, THRESH_BINARY_INV);
-		imshow("Output", y);
 		
-		Mat canny_output;
+		//Mat canny_output;
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
 
@@ -67,11 +65,11 @@ int main() {
 		drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
 
 		// Show in a window
-		namedWindow("Contours", CV_WINDOW_AUTOSIZE);
-		imshow("Contours", frame);
+		namedWindow("Detected Pupil", CV_WINDOW_AUTOSIZE);
+		imshow("Detected Pupil", frame);
 		
 		waitKey(0);
-	}
+	//}
 	
 	return 0;
 }
