@@ -44,7 +44,7 @@ int main() {
 		threshold(y, y, threshVal, 255, THRESH_BINARY_INV);
 		imshow("Output", y);
 		
-		Mat canny_output;
+		//Mat canny_output;
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
 
@@ -63,14 +63,13 @@ int main() {
 				maxArea = ar;
 			}
 		}
-		std::cout<<maxArea<<"lol"<<std::endl;
 		drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
 
 		// Show in a window
 		namedWindow("Contours", CV_WINDOW_AUTOSIZE);
 		imshow("Contours", frame);
 		
-		waitKey(0);
+		waitKey(1);
 	}
 	
 	return 0;
