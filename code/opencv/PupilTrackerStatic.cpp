@@ -61,7 +61,6 @@ int main() {
 				maxArea = ar;
 			}
 		}
-		std::cout<<maxArea<<"lol"<<std::endl;
 		drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
 
 		// Show in a window

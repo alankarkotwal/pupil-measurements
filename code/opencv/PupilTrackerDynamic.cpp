@@ -17,16 +17,17 @@ RNG rng(12345);
 
 int main() {
 
-	//VideoCapture cap(1);
+	VideoCapture cap(1);
 	Mat frame;
-	frame = imread("../../images/eye.jpg");
 	Mat frameCopy = frame.clone();
+	//frame = imread("../../images/eye.jpg");
 	//char key;
 	namedWindow("Eye Frame", WINDOW_AUTOSIZE);
+	namedWindow("Output", WINDOW_AUTOSIZE);
 	
-	//while(1) {
+	while(1) {
 		
-		//cap >> frame;
+		cap >> frame;
 		imshow("Eye Frame", frame);
 		//key = waitKey(1);
 		//if(key == 'c') {
@@ -42,6 +43,7 @@ int main() {
 		
 		equalizeHist(y, y);
 		threshold(y, y, threshVal, 255, THRESH_BINARY_INV);
+		imshow("Output", y);
 		
 		//Mat canny_output;
 		vector<vector<Point> > contours;
@@ -63,17 +65,17 @@ int main() {
 			}
 		}
 		drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
-		
+
 		// Fit ellipses
 		RotatedRect fittedEllipse = fitEllipse(Mat(contours[maxIndex]));
 		ellipse(frameCopy, fittedEllipse, Scalar(0, 255, 0), 2, 8);
-		
+
 		// Show in a window
-		namedWindow("Detected Pupil", CV_WINDOW_AUTOSIZE);
-		imshow("Detected Pupil", frameCopy);
+		namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+		imshow("Contours", frame);
 		
-		waitKey(0);
-	//}
+		waitKey(1);
+	}
 	
 	return 0;
 }
