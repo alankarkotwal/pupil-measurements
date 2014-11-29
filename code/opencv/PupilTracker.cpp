@@ -9,6 +9,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include <fstream>
+#include <time.h>
 
 using namespace cv;
 
@@ -19,19 +21,20 @@ int main() {
 
 	//VideoCapture cap(1);
 	Mat frame;
-	frame = imread("../../images/eye.jpg");
 	Mat frameCopy = frame.clone();
-	//char key;
+	frame = imread("../../images/eye.jpg");
+	char key;
 	namedWindow("Eye Frame", WINDOW_AUTOSIZE);
+	namedWindow("Output", WINDOW_AUTOSIZE);
 	
-	//while(1) {
+	std::ofstream results("../../results/data");
+	time_t start = time(0);
+	
+	while(key != 'c') {
 		
 		//cap >> frame;
 		imshow("Eye Frame", frame);
-		//key = waitKey(1);
-		//if(key == 'c') {
-		//	break;
-		//}
+		key = waitKey(1);
 		
 		Mat ycbcr;
 		cvtColor(frame, ycbcr, CV_BGR2YCrCb);
@@ -42,13 +45,11 @@ int main() {
 		
 		equalizeHist(y, y);
 		threshold(y, y, threshVal, 255, THRESH_BINARY_INV);
+		imshow("Output", y);
 		
-		//Mat canny_output;
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
 
-		// Detect edges using canny
-		//Canny(y, canny_output, 200, 255, 5);
 		// Find contours
 		findContours(y, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
 		
@@ -62,18 +63,22 @@ int main() {
 				maxArea = ar;
 			}
 		}
-		drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
-		
+		//drawContours(frame, contours, maxIndex, Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
+
 		// Fit ellipses
 		RotatedRect fittedEllipse = fitEllipse(Mat(contours[maxIndex]));
 		ellipse(frameCopy, fittedEllipse, Scalar(0, 255, 0), 2, 8);
 		
-		// Show in a window
-		namedWindow("Detected Pupil", CV_WINDOW_AUTOSIZE);
-		imshow("Detected Pupil", frameCopy);
+		std::cout<<"Ellipse height: "<<fittedEllipse.size.height<<" width: "<<fittedEllipse.size.width<<std::endl;
 		
-		waitKey(0);
-	//}
+		results<<time(0)-start<<","<<fittedEllipse.size.height<<","<<fittedEllipse.size.width<<std::endl;
+
+		// Show in a window
+		namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+		imshow("Contours", frame);
+		
+		waitKey(1);
+	}
 	
 	return 0;
 }
