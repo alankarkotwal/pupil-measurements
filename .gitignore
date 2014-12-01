@@ -2,3 +2,7 @@
 *~
 *.save
 *.bkp
+
+*.mp4
+
+code/opencv/build/*

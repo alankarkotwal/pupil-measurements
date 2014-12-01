@@ -1,1 +1,0 @@
-/home/aloo/pup-mem/code/opencv/CMakeFiles/PupilTracker.dir

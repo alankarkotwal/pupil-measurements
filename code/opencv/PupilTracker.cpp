@@ -13,28 +13,27 @@
 #include <time.h>
 
 using namespace cv;
-
+	
 int threshVal = 10;
 RNG rng(12345);
 
 int main() {
 
-	//VideoCapture cap(1);
+	VideoCapture cap("../../../images/Vinay_righteye.mp4");
 	Mat frame;
 	Mat frameCopy = frame.clone();
-	frame = imread("../../images/eye.jpg");
-	char key;
-	namedWindow("Eye Frame", WINDOW_AUTOSIZE);
-	namedWindow("Output", WINDOW_AUTOSIZE);
 	
-	std::ofstream results("../../results/data");
-	time_t start = time(0);
+	std::ofstream results("data_Vinay_Right");
+	time_t start = clock();
 	
-	while(key != 'c') {
+	while(1) {
 		
-		//cap >> frame;
-		imshow("Eye Frame", frame);
-		key = waitKey(1);
+		cap >> frame;
+		if(!frame.rows) {
+			break;
+		}
+		//imshow("Eye Frame", frame);
+		//waitKey(1);
 		
 		Mat ycbcr;
 		cvtColor(frame, ycbcr, CV_BGR2YCrCb);
@@ -45,7 +44,7 @@ int main() {
 		
 		equalizeHist(y, y);
 		threshold(y, y, threshVal, 255, THRESH_BINARY_INV);
-		imshow("Output", y);
+		//imshow("Output", y);
 		
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
@@ -71,14 +70,17 @@ int main() {
 		
 		std::cout<<"Ellipse height: "<<fittedEllipse.size.height<<" width: "<<fittedEllipse.size.width<<std::endl;
 		
-		results<<time(0)-start<<","<<fittedEllipse.size.height<<","<<fittedEllipse.size.width<<std::endl;
+		results<<clock()-start<<"\t"<<fittedEllipse.size.height<<"\t"<</*fittedEllipse.size.width<<*/std::endl;
 
 		// Show in a window
-		namedWindow("Contours", CV_WINDOW_AUTOSIZE);
-		imshow("Contours", frame);
+		//namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+		//imshow("Contours", frame);
 		
 		waitKey(1);
 	}
+	
+	cap.release();
+	results.close();
 	
 	return 0;
 }
